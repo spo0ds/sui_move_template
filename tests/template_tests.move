@@ -4,6 +4,7 @@ module template::template_tests {
     use sui::test_scenario::{Self, Scenario};
     use std::debug::print;
     use template::template::{Self};
+    use template::version::{Self, Version};
 
     // errors
 
@@ -43,6 +44,7 @@ module template::template_tests {
         {
             // call test_init function of your modules
             template::test_init(test_scenario::ctx(scenario));
+            version::test_init(test_scenario::ctx(scenario));
         };
     }
 }
