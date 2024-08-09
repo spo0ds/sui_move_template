@@ -4,8 +4,13 @@ module template::template {
     use std::string::{utf8};
     use sui::display;
     use sui::package;
+    use sui::event::emit;
+    use template::version::{Version, checkVersion};
 
     // errors
+
+    // constants
+    const VERSION: u64 = 1;
 
     // one time witness
     public struct TEMPLATE has drop { }
@@ -54,6 +59,19 @@ module template::template {
     }
 
     // public functions
+    public fun create_template(version: &Version, ctx: &mut TxContext): Template_Struct {
+        checkVersion(version, VERSION);
+
+        let template_struct = Template_Struct {
+            id: object::new(ctx)
+        }; 
+
+        emit(TemplateCreated {
+            id: object::id(&template_struct)
+        });
+
+        template_struct
+    }
 
     // private functions
 
@@ -62,6 +80,6 @@ module template::template {
     // initializing for testing
     #[test_only]
     public fun test_init(ctx: &mut TxContext) {
-        init(ctx);
+        init(TEMPLATE{}, ctx);
     }
 }
