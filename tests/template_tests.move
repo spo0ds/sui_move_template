@@ -3,7 +3,7 @@ module template::template_tests {
     // imports
     use sui::test_scenario::{Self, Scenario};
     use std::debug::print;
-    use template::template::{Self};
+    use template::template::{Self, Admin};
     use template::version::{Self, Version};
 
     // errors
@@ -18,7 +18,8 @@ module template::template_tests {
         let mut scenario= test_scenario::begin(ADMIN);
         let test = &mut scenario;
         let ctx = test_scenario::ctx(test);
-
+        
+        
         test_scenario::end(scenario);
     }
 
@@ -30,12 +31,16 @@ module template::template_tests {
         initialize(test, ADMIN);
         test_scenario::next_tx(test, ADMIN);
         {
-           
+            let admin_cap = test_scenario::take_from_sender<Admin>(test);
+
+            test_scenario::return_to_sender(test, admin_cap);
         };
+        let version = test_scenario::take_shared<Version>(test);
         test_scenario::next_tx(test, ADMIN);
         {   
     
         };
+        test_scenario::return_shared(version);
         test_scenario::end(scenario);
     }
 
